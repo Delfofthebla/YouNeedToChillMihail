@@ -1,0 +1,11 @@
+{
+  "Nickname": "You need to CHILL Mihail",
+  "Visibility": "Visible",
+  "OneLineDescription": "Mihail has got PROBLEMS. All of his enemies are too tanky and deal too much damage. Time to take matters into our own hands.",
+  "LongDescription": "Applies a blanket percentage nerf against all mihail mob damage and health values. This patcher just looks for any plugin with the word 'mihail' in it and applies the nerfs to any races or npcs defined in that mod. It might miss some stuff.",
+  "PreferredAutoVersioning": "Default",
+  "RequiredMods": [],
+  "TargetedReleases": [
+    "SkyrimSE"
+  ]
+}
