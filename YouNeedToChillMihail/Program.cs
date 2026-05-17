@@ -72,18 +72,27 @@ public class Program
                     continue;
 
                 var oldValue = data.DamageMult;
+                if (oldValue == 0)
+                    continue;
+                
                 data.DamageMult = GetNerfedFloatValue(data.DamageMult, Settings.DamageNerfPercent);
                 Console.WriteLine($"Ra: {raceCopy.EditorID} Damage for attack '{atk?.AttackEvent}' nerfed from {oldValue} to {data.DamageMult}");
             }
         }
 
         var oldUnarmed = raceCopy.UnarmedDamage;
-        raceCopy.UnarmedDamage = GetNerfedFloatValue(raceCopy.UnarmedDamage, Settings.DamageNerfPercent);
-        Console.WriteLine($"Race: {raceCopy.EditorID} Unarmed Damage nerfed from {oldUnarmed} to {raceCopy.UnarmedDamage}");
+        if (oldUnarmed != 0)
+        {
+            raceCopy.UnarmedDamage = GetNerfedFloatValue(raceCopy.UnarmedDamage, Settings.DamageNerfPercent);
+            Console.WriteLine($"Race: {raceCopy.EditorID} Unarmed Damage nerfed from {oldUnarmed} to {raceCopy.UnarmedDamage}");
+        }
 
         var oldHealth = raceCopy.Starting[BasicStat.Health];
-        raceCopy.Starting[BasicStat.Health] = GetNerfedFloatValue(raceCopy.Starting[BasicStat.Health], Settings.HealthNerfPercent);
-        Console.WriteLine($"Race: {raceCopy.EditorID} Starting Health nerfed from {oldHealth} to {raceCopy.Starting[BasicStat.Health]}");
+        if (oldHealth != 0)
+        {
+            raceCopy.Starting[BasicStat.Health] = GetNerfedFloatValue(raceCopy.Starting[BasicStat.Health], Settings.HealthNerfPercent);
+            Console.WriteLine($"Race: {raceCopy.EditorID} Starting Health nerfed from {oldHealth} to {raceCopy.Starting[BasicStat.Health]}");
+        }
     }
 
     private static void ApplyNerfsToNpcRecord(IPatcherState<ISkyrimMod, ISkyrimModGetter> state, INpcGetter npc)
@@ -100,6 +109,9 @@ public class Program
                     continue;
 
                 var oldValue = data.DamageMult;
+                if (oldValue == 0)
+                    continue;
+                
                 data.DamageMult = GetNerfedFloatValue(data.DamageMult, Settings.DamageNerfPercent);
                 Console.WriteLine($"NPC: {npcCopy.EditorID} Damage for attack '{atk?.AttackEvent}' nerfed from {oldValue} to {data.DamageMult}");
             }
@@ -109,12 +121,15 @@ public class Program
         npcCopy.Configuration.HealthOffset = GetNerfedShortValue(npcCopy.Configuration.HealthOffset, Settings.HealthNerfPercent);
         Console.WriteLine($"NPC: {npcCopy.EditorID} Health Offset nerfed from {oldHealthOffset} to {npcCopy.Configuration.HealthOffset}");
 
-        if (npcCopy.PlayerSkills != null)
-        {
-            var oldHealth = npcCopy.PlayerSkills.Health;
-            npcCopy.PlayerSkills.Health = GetNerfedUShortValue(npcCopy.PlayerSkills.Health, Settings.HealthNerfPercent);
-            Console.WriteLine($"NPC: {npcCopy.EditorID} Health nerfed from {oldHealth} to {npcCopy.PlayerSkills.Health}");
-        }
+        if (npcCopy.PlayerSkills == null)
+            return;
+
+        var oldHealth = npcCopy.PlayerSkills.Health;
+        if (oldHealth == 0)
+            return;
+
+        npcCopy.PlayerSkills.Health = GetNerfedUShortValue(npcCopy.PlayerSkills.Health, Settings.HealthNerfPercent);
+        Console.WriteLine($"NPC: {npcCopy.EditorID} Health nerfed from {oldHealth} to {npcCopy.PlayerSkills.Health}");
     }
 
     private static float GetNerfedFloatValue(float oldValue, float multiplier) => (float)Math.Round(oldValue * (1 - Math.Sign(oldValue) * multiplier), 4);
